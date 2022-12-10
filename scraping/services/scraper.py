@@ -3,6 +3,7 @@ import base64
 import io
 import urllib
 
+import PIL
 from pyppeteer import launch
 import nltk
 from nltk.tokenize import word_tokenize
@@ -161,9 +162,14 @@ def get_vectorizer():
 def get_wordcloud(data):
     wordcloud = WordCloud().generate(data)
     wordcloud.generate(str(data))
+    plt.imshow(wordcloud, interpolation="bilinear")
+    plt.axis("off")
     image = io.BytesIO()
     plt.savefig(image, format="png")
     image.seek(0)
     string = base64.b64encode(image.read())
     image_64 = "data:image/png;base64," + urllib.parse.quote_plus(string)
+    plt.close()
+    # import code;
+    # code.interact(local=dict(globals(), **locals()))
     return image_64

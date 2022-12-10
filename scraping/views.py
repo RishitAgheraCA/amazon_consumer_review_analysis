@@ -4,7 +4,9 @@ from .services import scraper
 import asyncio, re
 from pyppeteer import launch
 
-review_texts =[]
+review_texts = []
+
+
 def get_or_create_eventloop():
     try:
         return asyncio.get_event_loop()
@@ -30,7 +32,7 @@ class InferenceView(View):
         finally:
             loop.close()
 
-        sentiments,texts = scraper.inference(data)
+        sentiments, texts = scraper.inference(data)
         print("view:", sentiments)
         perc_pos = (sentiments.count('Positive') / len(sentiments)) * 100
 
@@ -43,8 +45,10 @@ class InferenceView(View):
         #     messege = 'Crop is Healthy'
         # else:
         #     messege = 'Crop is Diseased'
-        # wordcloud = scraper.get_wordcloud(texts['positive'])
+        wc_pos = scraper.get_wordcloud(texts['positive']) if len(texts['positive']) > 0 else ""
+        wc_neg = scraper.get_wordcloud(texts['negative']) if len(texts['negative']) > 0 else ""
         messege = {'sentiments': sentiments,
-                   'perc_pos': perc_pos}
-                   # 'wordcloud': wordcloud}
-        return render(request, 'scraping/amazon_index.html',messege)
+                   'perc_pos': perc_pos,
+                   'wc_pos': wc_pos,
+                   'wc_neg': wc_neg}
+        return render(request, 'scraping/amazon_index.html', messege)
