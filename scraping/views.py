@@ -30,7 +30,7 @@ class InferenceView(View):
         finally:
             loop.close()
 
-        sentiments = scraper.inference(data)
+        sentiments,texts = scraper.inference(data)
         print("view:", sentiments)
         perc_pos = (sentiments.count('Positive') / len(sentiments)) * 100
 
@@ -43,6 +43,8 @@ class InferenceView(View):
         #     messege = 'Crop is Healthy'
         # else:
         #     messege = 'Crop is Diseased'
+        # wordcloud = scraper.get_wordcloud(texts['positive'])
         messege = {'sentiments': sentiments,
                    'perc_pos': perc_pos}
+                   # 'wordcloud': wordcloud}
         return render(request, 'scraping/amazon_index.html',messege)
